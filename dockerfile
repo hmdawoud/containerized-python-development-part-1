@@ -1,17 +1,18 @@
-# set base image (host OS)
-FROM python:3.8
+# First Stage
+FROM python:3.8 AS builder 
+COPY requirments.txt .
 
-# set the working directory in the container
+#install dep. to local user directory
+RUN pip install --user -r requirments.txt
+
+#Second stage
+FROM python:3.8-slim
 WORKDIR /code
 
-# copy the dependencies file to the working directory
-COPY requirments.txt  .
+ # copy only the dependencies installation from the 1st stage image
+COPY --from=builder /root/.local/bin /root/.local
+COPY ./src .
+# update PATH environment variable
+ENV PATH=/root/.local:$PATH
 
-# install dependencies
-RUN pip install -r requirments.txt
-
-# copy the content of the local src directory to the working directory
-COPY src/ .
-
-# command to run on container start
 CMD [ "python3", "./server.py" ] 
