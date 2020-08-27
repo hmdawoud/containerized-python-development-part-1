@@ -2,7 +2,7 @@
 FROM python:3.8 AS builder
 COPY requirements.txt .
 
-# install dependencies to the local user directory (eg. /root/.local)
+ # install dependencies to the local user directory (eg. /root/.local)
 RUN pip3 install --user -r requirements.txt
 
 # second unnamed stage
@@ -14,8 +14,6 @@ COPY --from=builder /root/.local/bin /root/.local
 COPY ./src .
 
 # update PATH environment variable
-ENV PATH=/root/.local/bin:$PATH
+ENV PATH=root/.local/:$PATH
 
 CMD [ "python3", "./server.py" ]
-
- 
